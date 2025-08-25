@@ -37,6 +37,16 @@ export default function HomeScreen() {
       <View
         style={{ flex: 1, backgroundColor: '#ededed', paddingHorizontal: 16 }}
       />
+      <View style={styles.progressBarBg}>
+        <View
+          style={[
+            styles.progressBarFill,
+            {
+              width: `${Math.min(100, Math.max(0, ((status?.currentTime ?? 0) / Math.max(1, status?.duration ?? 1)) * 100))}%`,
+            },
+          ]}
+        />
+      </View>
       <View style={styles.footer}>
         <TouchableOpacity
           onPress={onPressBack}
@@ -79,6 +89,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 27,
+    backgroundColor: '#ffd91a',
+  },
+  progressBarBg: {
+    height: 6,
+    width: '100%',
+    backgroundColor: '#fff',
+    overflow: 'hidden',
+  },
+  progressBarFill: {
+    height: '100%',
     backgroundColor: '#ffd91a',
   },
 });
