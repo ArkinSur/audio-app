@@ -1,16 +1,32 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useAudioPlayer, useAudioPlayerStatus } from 'expo-audio';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+
+import {
+  Cue,
+  findActiveCueIndex,
+  TranscriptMeta,
+  transcriptToCues,
+} from '@/utils';
 
 const audioSource = require('../assets/audio/example_audio.mp3');
+
+const transcription = require('../constants/metadata.json') as TranscriptMeta;
 
 export default function HomeScreen() {
   const player = useAudioPlayer(audioSource);
   const status = useAudioPlayerStatus(player);
+  const [cues, setCues] = useState<Cue[]>([]);
 
   const insets = useSafeAreaInsets();
 
@@ -22,10 +38,39 @@ export default function HomeScreen() {
     }
   }, [player]);
 
-  const onPressBack = useCallback(() => {
-    player.pause();
-    player.seekTo(0);
-  }, [player]);
+  const onPressBack = useCallback(
+    (index: number) => {
+      const currentCue = cues[index];
+      const previousCue = index === 0 ? currentCue : cues[index - 1];
+
+      if (status.currentTime <= currentCue.start) {
+        player.seekTo(previousCue.start);
+      } else {
+        player.seekTo(currentCue.start);
+      }
+    },
+    [player, cues, status.currentTime],
+  );
+
+  const onPressForward = useCallback(
+    (index: number) => {
+      const maxLength = cues.length;
+
+      if (index + 1 !== maxLength) {
+        player.seekTo(cues[index + 1].start);
+      }
+    },
+    [cues, player],
+  );
+
+  const activeIndex = useMemo(
+    () => findActiveCueIndex(cues, status?.currentTime ?? 0),
+    [cues, status?.currentTime],
+  );
+
+  useEffect(() => {
+    transcriptToCues(transcription)(setCues);
+  }, []);
 
   return (
     <View
@@ -34,9 +79,40 @@ export default function HomeScreen() {
         { paddingTop: insets.top, paddingBottom: insets.bottom },
       ]}
     >
-      <View
-        style={{ flex: 1, backgroundColor: '#ededed', paddingHorizontal: 16 }}
-      />
+      <View style={styles.header}>
+        <Text style={{ fontSize: 24, fontWeight: '600' }}>Audio App</Text>
+      </View>
+      <View style={{ flex: 1, backgroundColor: '#ededed' }}>
+        <ScrollView
+          contentContainerStyle={{
+            padding: 16,
+            rowGap: 16,
+          }}
+        >
+          {cues.map((cue, index) => (
+            <View key={cue.start} style={styles.textContainer}>
+              <Text
+                style={[
+                  styles.title,
+                  {
+                    color: index === activeIndex ? '#dba602' : '#000',
+                  },
+                ]}
+              >
+                {cue.speaker}
+              </Text>
+              <Text
+                style={{
+                  marginTop: 6,
+                  color: index === activeIndex ? '#dba602' : '#000',
+                }}
+              >
+                {cue.text}
+              </Text>
+            </View>
+          ))}
+        </ScrollView>
+      </View>
       <View style={styles.progressBarBg}>
         <View
           style={[
@@ -49,7 +125,7 @@ export default function HomeScreen() {
       </View>
       <View style={styles.footer}>
         <TouchableOpacity
-          onPress={onPressBack}
+          onPress={() => onPressBack(activeIndex)}
           style={[styles.playButton, { backgroundColor: '#fff' }]}
         >
           <Ionicons name="play-back" size={28} color="black" />
@@ -62,6 +138,7 @@ export default function HomeScreen() {
           )}
         </TouchableOpacity>
         <TouchableOpacity
+          onPress={() => onPressForward(activeIndex)}
           style={[styles.playButton, { backgroundColor: '#fff' }]}
         >
           <Ionicons name="play-forward" size={28} color="black" />
@@ -76,6 +153,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
+  header: {
+    height: 60,
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   footer: {
     height: 120,
     flexDirection: 'row',
@@ -89,7 +172,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 27,
-    backgroundColor: '#ffd91a',
+    backgroundColor: '#dba602',
   },
   progressBarBg: {
     height: 6,
@@ -99,6 +182,16 @@ const styles = StyleSheet.create({
   },
   progressBarFill: {
     height: '100%',
-    backgroundColor: '#ffd91a',
+    backgroundColor: '#dba602',
+  },
+  textContainer: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    backgroundColor: '#fff',
+    borderRadius: 6,
+  },
+  title: {
+    fontSize: 16,
+    fontWeight: '500',
   },
 });
