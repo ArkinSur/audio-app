@@ -70,3 +70,13 @@ export const findActiveCueIndex = (cues: Cue[], positionSec: number) => {
   }
   return Math.max(0, Math.min(lo, cues.length - 1));
 };
+
+export const formatTime = (time: number) => {
+  const m = Math.floor(time / 60)
+    .toString()
+    .padStart(2, '0');
+  const s = Math.floor(time % 60)
+    .toString()
+    .padStart(2, '0');
+  return `${m}:${s}`;
+};

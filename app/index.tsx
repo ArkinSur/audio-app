@@ -5,7 +5,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { AudioControls } from '@/components/AudioControls';
-import { ProgressBar } from '@/components/ProgressBar';
 import { AudioContext } from '@/contexts/AudioContext';
 
 export default function HomeScreen() {
@@ -59,7 +58,6 @@ export default function HomeScreen() {
           ))}
         </ScrollView>
       </View>
-      <ProgressBar />
       <AudioControls />
     </View>
   );
