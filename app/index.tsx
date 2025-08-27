@@ -28,34 +28,36 @@ export default function HomeScreen() {
             rowGap: 16,
           }}
         >
-          {cues.map((cue, index) => (
-            <View
-              key={cue.start}
-              style={[
-                styles.textContainer,
-                { alignSelf: index % 2 ? 'flex-end' : 'flex-start' },
-              ]}
-            >
-              <Text
+          {cues.map((cue, index) => {
+            const activeColor = index === activeIndex ? '#dba602' : '#000';
+            return (
+              <View
+                key={cue.start}
                 style={[
-                  styles.title,
-                  {
-                    color: index === activeIndex ? '#dba602' : '#000',
-                  },
+                  styles.textContainer,
+                  { alignSelf: index % 2 ? 'flex-end' : 'flex-start' },
                 ]}
               >
-                {cue.speaker}
-              </Text>
-              <Text
-                style={{
-                  marginTop: 6,
-                  color: index === activeIndex ? '#dba602' : '#000',
-                }}
-              >
-                {cue.text}
-              </Text>
-            </View>
-          ))}
+                <Text
+                  style={[
+                    styles.title,
+                    {
+                      color: activeColor,
+                    },
+                  ]}
+                >
+                  {cue.speaker}
+                </Text>
+                <Text
+                  style={{
+                    color: activeColor,
+                  }}
+                >
+                  {cue.text}
+                </Text>
+              </View>
+            );
+          })}
         </ScrollView>
       </View>
       <AudioControls />
@@ -103,6 +105,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 6,
     maxWidth: '80%',
+    rowGap: 6,
   },
   title: {
     fontSize: 16,

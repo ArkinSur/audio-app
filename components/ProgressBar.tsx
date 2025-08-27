@@ -10,6 +10,7 @@ export function ProgressBar() {
   return (
     <View style={styles.progressBarBg}>
       <View
+        testID="progress-fill"
         style={[
           styles.progressBarFill,
           {

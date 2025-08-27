@@ -95,11 +95,3 @@ export const AudioProvider = ({ children }: { children: React.ReactNode }) => {
     </AudioContext.Provider>
   );
 };
-
-//   export const useAudio = (): AudioContextType => {
-//     const context = useContext(TripsContext);
-//     if (!context) {
-//       throw new Error("useTrips must be used within an TripsProvider");
-//     }
-//     return context;
-//   };
