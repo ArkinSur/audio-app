@@ -1,21 +1,14 @@
-import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+
+import { AudioProvider } from '@/contexts/AudioContext';
 import 'react-native-reanimated';
 
 export default function RootLayout() {
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
-
-  if (!loaded) {
-    return null;
-  }
-
   return (
-    <>
-      <Stack screenOptions={{ headerShown: false }} />
+    <AudioProvider>
       <StatusBar style="auto" />
-    </>
+      <Stack screenOptions={{ headerShown: false }} />
+    </AudioProvider>
   );
 }
