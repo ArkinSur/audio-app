@@ -1,4 +1,4 @@
-# Welcome to your Expo app 👋
+# Welcome to your Audio App 👋
 
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 
@@ -10,41 +10,88 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
    npm install
    ```
 
-2. Start the app
+2. Start the development server
 
    ```bash
    npx expo start
    ```
 
-In the output, you'll find options to open the app in a
+   This will open Expo Developer Tools in your browser and show a QR code.
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+3. Run the app locally
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+   - **Web**: Press `w` in the terminal or click "Open in web browser" in Expo Developer Tools
+   - **iOS Simulator**: Press `i` in the terminal (requires Xcode on macOS)
+   - **Android Emulator**: Press `a` in the terminal (requires Android Studio)
+   - **Physical Device**: Install [Expo Go](https://expo.dev/client) and scan the QR code
 
-## Get a fresh project
+## Building for Production
 
-When you're ready, run:
+### Web
+
+To build the web version for production:
 
 ```bash
-npm run reset-project
+npx expo export:web
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+This creates a `web-build` directory with optimized static files ready for deployment.
 
-## Learn more
+### Android
 
-To learn more about developing your project with Expo, look at the following resources:
+To build an Android APK or AAB:
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+1. **Configure app.json** (already done for this project)
+2. **Build the app**:
+   ```bash
+   npx expo build:android
+   ```
+   
+   Or for a specific build type:
+   ```bash
+   # For APK (easier to install on devices)
+   npx expo build:android --type apk
+   
+   # For AAB (required for Google Play Store)
+   npx expo build:android --type aab
+   ```
 
-## Join the community
+3. **Download the build** from the provided URL when complete
 
-Join our community of developers creating universal apps.
+### iOS
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+To build for iOS:
+
+1. **Configure app.json** (already done for this project)
+2. **Build the app**:
+   ```bash
+   npx expo build:ios
+   ```
+   
+   Or for a specific build type:
+   ```bash
+   # For simulator
+   npx expo build:ios --type simulator
+   
+   # For device
+   npx expo build:ios --type archive
+   ```
+
+3. **Download the build** from the provided URL when complete
+
+
+## Testing
+
+Run the test suite:
+
+```bash
+# Run all tests
+npm test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Run tests for CI
+npm run test:ci
+```
+
