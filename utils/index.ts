@@ -1,12 +1,12 @@
 import { Dispatch, SetStateAction } from 'react';
 
 export type TranscriptMeta = {
-  pause: number;
+  pause: number; // milliseconds
   speakers: {
     name: string;
     phrases: {
       words: string;
-      time: number;
+      time: number; // milliseconds
     }[];
   }[];
 };
@@ -59,18 +59,33 @@ export const transcriptToCues =
   };
 
 export const findActiveCueIndex = (cues: Cue[], positionSec: number) => {
+  // Binary search to find the closest cue index to the given position
   let lo = 0;
   let hi = cues.length - 1;
+
   while (lo <= hi) {
-    const mid = (lo + hi) >> 1;
-    const c = cues[mid];
-    if (positionSec < c.start) hi = mid - 1;
-    else if (positionSec > c.end) lo = mid + 1;
-    else return mid;
+    const mid = Math.floor((lo + hi) / 2);
+    const cue = cues[mid];
+
+    const isBefore = positionSec < cue.start;
+    const isAfter = positionSec > cue.end;
+
+    if (isBefore) {
+      hi = mid - 1;
+    } else if (isAfter) {
+      lo = mid + 1;
+    } else {
+      // positionSec is within this cue
+      return mid;
+    }
   }
-  return Math.max(0, Math.min(lo, cues.length - 1));
+
+  // If no exact match, return the closest valid index
+  const closest = lo;
+  return Math.max(0, Math.min(closest, cues.length - 1));
 };
 
+// Format time in minutes:seconds
 export const formatTime = (time: number) => {
   const m = Math.floor(time / 60)
     .toString()

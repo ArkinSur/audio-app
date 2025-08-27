@@ -1,3 +1,20 @@
+/**
+ * This context provides centralized audio state management for the entire application.
+ *
+ * Why use Context API:
+ * - Global State Management: Audio playback state (playing/paused, current time, duration)
+ *   needs to be shared across multiple components (HomeScreen, AudioControls, ProgressBar)
+ *   without prop drilling through intermediate components.
+ *
+ * - Real-time Synchronization: The active cue index and playback status must update
+ *   in real-time across all components. Context ensures all consumers re-render when
+ *   audio state changes, keeping the UI synchronized.
+ *
+ * - Centralized Audio Logic: All audio-related operations (play, pause, seek, navigation)
+ *   are centralized in one place, making the codebase more maintainable and reducing
+ *   duplicate logic across components.
+ */
+
 import {
   createContext,
   useCallback,

@@ -8,6 +8,7 @@ import { AudioControls } from '@/components/AudioControls';
 import { AudioContext } from '@/contexts/AudioContext';
 
 export default function HomeScreen() {
+  // Keep the layout in sync with the safe area insets
   const insets = useSafeAreaInsets();
   const { cues, activeIndex } = useContext(AudioContext);
 
@@ -22,6 +23,7 @@ export default function HomeScreen() {
         <Text style={styles.headerTitle}>Audio App</Text>
       </View>
       <View style={styles.content}>
+        {/* ScrollView is used to handle responsive layout for long transcripts */}
         <ScrollView
           contentContainerStyle={{
             padding: 16,
